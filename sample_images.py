@@ -18,7 +18,8 @@ def extract_timestamp(filename, splitchar="_"):
     return timestamp
 
 
-files = os.listdir(".")
+files = os.listdir("images/")
 images = [f for f in files if f.endswith(".jpg")]
 images = map(extract_timestamp, images)
-print(images)
+
+print(images[0])
