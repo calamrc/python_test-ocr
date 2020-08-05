@@ -1,6 +1,11 @@
 import os
 import datetime
+import shutil
 
+FORMAT = "WIN_{0}{1:02d}{2:02d}_{3:02d}_{4:02d}_{5:02d}{6}"
+EXTENSION = ".jpg"
+IMAGES_DIR = r"images"
+SAMPLES_DIR = r"samples"
 TIMEDELTA = datetime.timedelta(minutes=15)
 FIRST = 0
 LAST = -1
@@ -26,7 +31,7 @@ def extract_timestamp(filename, splitchar="_"):
     return timestamp
 
 
-def sample_images(image_timestamps, timedelta=TIMEDELTA, position=FIRST):
+def sample_images(image_timestamps, timedelta=TIMEDELTA, position=LAST):
     image_timestamps.sort()
 
     index = 0
@@ -35,11 +40,6 @@ def sample_images(image_timestamps, timedelta=TIMEDELTA, position=FIRST):
     samples = list()
     while True:
         try:
-            print(
-                "images remaining: {0}, sampled: {1}, to find: {2}, index: {3}, attempts: {4}".
-                format(
-                    len(image_timestamps), len(samples), timestamp_to_find,
-                    index, attempts))
             matches = [
                 item for item in image_timestamps
                 if item.replace(second=0) == timestamp_to_find.replace(
@@ -59,18 +59,28 @@ def sample_images(image_timestamps, timedelta=TIMEDELTA, position=FIRST):
                 return samples
 
 
-files = os.listdir("images/")
-images = [f for f in files if f.endswith(".jpg")]
-image_timestamps = map(extract_timestamp, images)
+def recreate_filename(timestamp, extension=EXTENSION):
+    return FORMAT.format(timestamp.year, timestamp.month, timestamp.day,
+                         timestamp.hour, timestamp.minute, timestamp.second,
+                         extension)
 
-for item in sample_images(image_timestamps):
-    print(item)
 
-# sample = list()
-# for item in image_timestamps:
-# image_timestamps.index(timestamp_to_find)
+def copy_samples(files, extension=EXTENSION):
+    images = [f for f in files if f.endswith(extension)]
+    image_timestamps = map(extract_timestamp, images)
+    samples = sample_images(image_timestamps)
 
-# print(len(sample))
+    if not os.path.exists(SAMPLES_DIR):
+        os.makedirs(SAMPLES_DIR)
 
-# for item in image_timestamps[:50]:
-# print(item, item + TIMEDELTA)
+    for s in samples:
+        filename = recreate_filename(s, extension)
+        print(filename)
+        source = os.path.join(IMAGES_DIR, filename)
+        destination = os.path.join(SAMPLES_DIR, filename)
+
+        shutil.copy(source, destination)
+
+
+files = os.listdir(IMAGES_DIR)
+copy_samples(files)
