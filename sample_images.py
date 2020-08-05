@@ -1,6 +1,8 @@
 import os
 import datetime
 
+TIMEDELTA = datetime.timedelta(minutes=15)
+
 
 def extract_filename(filename):
     return os.path.splitext(filename)[0]
@@ -24,7 +26,27 @@ def extract_timestamp(filename, splitchar="_"):
 
 files = os.listdir("images/")
 images = [f for f in files if f.endswith(".jpg")]
-extract_timestamp(images[0])
-# images = map(extract_timestamp, images)
+image_timestamps = map(extract_timestamp, images)
+image_timestamps.sort()
 
-# print(images)
+index = 0
+sample = list()
+while True:
+    try:
+        timestamp_to_find = image_timestamps.pop(index) + TIMEDELTA
+        sample.append(timestamp_to_find)
+        image_timestamps = image_timestamps[index::]
+        index = image_timestamps.index(timestamp_to_find)
+    except:
+        break
+
+print(sample)
+
+# sample = list()
+# for item in image_timestamps:
+# image_timestamps.index(timestamp_to_find)
+
+# print(len(sample))
+
+# for item in image_timestamps[:50]:
+# print(item, item + TIMEDELTA)
