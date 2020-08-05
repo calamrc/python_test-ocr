@@ -2,6 +2,8 @@ import os
 import datetime
 
 TIMEDELTA = datetime.timedelta(minutes=15)
+FIRST = 0
+LAST = -1
 
 
 def extract_filename(filename):
@@ -24,25 +26,45 @@ def extract_timestamp(filename, splitchar="_"):
     return timestamp
 
 
-def sample_images(image_timestamps, timedelta=TIMEDELTA):
+def sample_images(image_timestamps, timedelta=TIMEDELTA, position=FIRST):
+    image_timestamps.sort()
+
     index = 0
-    sample = list()
+    attempts = 1
+    timestamp_to_find = image_timestamps[index]
+    samples = list()
     while True:
         try:
-            timestamp_to_find = image_timestamps.pop(index) + timedelta
-            sample.append(timestamp_to_find)
-            image_timestamps = image_timestamps[index::]
-            index = image_timestamps.index(timestamp_to_find)
-        except:
-            return sample
+            print(
+                "images remaining: {0}, sampled: {1}, to find: {2}, index: {3}, attempts: {4}".
+                format(
+                    len(image_timestamps), len(samples), timestamp_to_find,
+                    index, attempts))
+            matches = [
+                item for item in image_timestamps
+                if item.replace(second=0) == timestamp_to_find.replace(
+                    second=0)
+            ]
+            samples.append(matches[position])
+            # image_timestamps = image_timestamps[index::]
+            index = image_timestamps.index(matches[position])
+            timestamp_to_find = matches[position] + timedelta
+
+            attempts = 1
+        except Exception as e:
+            attempts += 1
+            if timestamp_to_find < max(image_timestamps):
+                timestamp_to_find = timestamp_to_find + timedelta
+            else:
+                return samples
 
 
 files = os.listdir("images/")
 images = [f for f in files if f.endswith(".jpg")]
 image_timestamps = map(extract_timestamp, images)
-image_timestamps.sort()
 
-print(sample_images(image_timestamps))
+for item in sample_images(image_timestamps):
+    print(item)
 
 # sample = list()
 # for item in image_timestamps:
