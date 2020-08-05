@@ -1,4 +1,5 @@
 import os
+import datetime
 
 
 def extract_filename(filename):
@@ -15,11 +16,15 @@ def extract_timestamp(filename, splitchar="_"):
     timestamp["hour"] = int(sections[2])
     timestamp["minute"] = int(sections[3])
     timestamp["second"] = int(sections[4])
+
+    timestamp = datetime.datetime(**timestamp)
+
     return timestamp
 
 
 files = os.listdir("images/")
 images = [f for f in files if f.endswith(".jpg")]
-images = map(extract_timestamp, images)
+extract_timestamp(images[0])
+# images = map(extract_timestamp, images)
 
-print(images[0])
+# print(images)
