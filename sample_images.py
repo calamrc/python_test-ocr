@@ -24,23 +24,25 @@ def extract_timestamp(filename, splitchar="_"):
     return timestamp
 
 
+def sample_images(image_timestamps, timedelta=TIMEDELTA):
+    index = 0
+    sample = list()
+    while True:
+        try:
+            timestamp_to_find = image_timestamps.pop(index) + timedelta
+            sample.append(timestamp_to_find)
+            image_timestamps = image_timestamps[index::]
+            index = image_timestamps.index(timestamp_to_find)
+        except:
+            return sample
+
+
 files = os.listdir("images/")
 images = [f for f in files if f.endswith(".jpg")]
 image_timestamps = map(extract_timestamp, images)
 image_timestamps.sort()
 
-index = 0
-sample = list()
-while True:
-    try:
-        timestamp_to_find = image_timestamps.pop(index) + TIMEDELTA
-        sample.append(timestamp_to_find)
-        image_timestamps = image_timestamps[index::]
-        index = image_timestamps.index(timestamp_to_find)
-    except:
-        break
-
-print(sample)
+print(sample_images(image_timestamps))
 
 # sample = list()
 # for item in image_timestamps:
