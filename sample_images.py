@@ -68,7 +68,7 @@ def recreate_filename(timestamp, extension=EXTENSION):
 
 def copy_samples(file_list, extension=EXTENSION):
     images = [f for f in file_list if f.endswith(extension)]
-    image_timestamps = map(extract_timestamp, images)
+    image_timestamps = list(map(extract_timestamp, images))
     samples = sample_images(image_timestamps)
 
     if not os.path.exists(SAMPLES_DIR):
