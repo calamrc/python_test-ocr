@@ -15,10 +15,10 @@ def extract_filename(filename):
     return os.path.splitext(filename)[0]
 
 
-def extract_timestamp(filename, splitchar="_"):
+def extract_timestamp(filename, split_char="_"):
     filename = extract_filename(filename)
-    sections = filename.split(splitchar)
-    timestamp = {}
+    sections = filename.split(split_char)
+    timestamp = dict()
     timestamp["year"] = int(sections[1][:4])
     timestamp["month"] = int(sections[1][4:6])
     timestamp["day"] = int(sections[1][-2:])
@@ -47,11 +47,12 @@ def sample_images(image_timestamps, timedelta=TIMEDELTA, position=LAST):
             ]
             samples.append(matches[position])
             # image_timestamps = image_timestamps[index::]
-            index = image_timestamps.index(matches[position])
+            # index = image_timestamps.index(matches[position])
             timestamp_to_find = matches[position] + timedelta
 
             attempts = 1
         except Exception as e:
+            print("error: {}".format(e))
             attempts += 1
             if timestamp_to_find < max(image_timestamps):
                 timestamp_to_find = timestamp_to_find + timedelta
@@ -65,8 +66,8 @@ def recreate_filename(timestamp, extension=EXTENSION):
                          extension)
 
 
-def copy_samples(files, extension=EXTENSION):
-    images = [f for f in files if f.endswith(extension)]
+def copy_samples(file_list, extension=EXTENSION):
+    images = [f for f in file_list if f.endswith(extension)]
     image_timestamps = map(extract_timestamp, images)
     samples = sample_images(image_timestamps)
 
