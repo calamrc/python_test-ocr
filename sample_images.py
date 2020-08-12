@@ -77,8 +77,7 @@ def sample_images(image_timestamps, timedelta=TIMEDELTA, position=LAST):
             timestamp_to_find = matches[position] + timedelta
 
             attempts = 1
-        except Exception as e:
-            print(e)
+        except IndexError:
             attempts += 1
             if timestamp_to_find < max(image_timestamps):
                 timestamp_to_find = timestamp_to_find + timedelta
