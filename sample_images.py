@@ -2,7 +2,7 @@ import os
 import datetime
 import shutil
 
-FORMAT = "WIN_{0}{1:02d}{2:02d}_{3:02d}_{4:02d}_{5:02d}{6}"
+FORMAT = "WIN_{0}{1:02d}{2:02d}_{3:02d}_{4:02d}_{5:02d}_Pro{6}"
 EXTENSION = ".jpg"
 IMAGES_DIR = r"images"
 SAMPLES_DIR = r"samples"
