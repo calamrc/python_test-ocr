@@ -82,5 +82,8 @@ def copy_samples(files, extension=EXTENSION):
         shutil.copy(source, destination)
 
 
-files = os.listdir(IMAGES_DIR)
-copy_samples(files)
+try:
+    files = os.listdir(IMAGES_DIR)
+    copy_samples(files)
+except IndexError:
+    print("Copy the timelapse images to images folder")
